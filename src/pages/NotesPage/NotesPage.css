@@ -1,0 +1,6 @@
+.notes-container{
+    display: grid;
+    grid-template-columns: auto auto auto;
+    margin-top: 20px;
+    background-color: var(--tan-4);
+}

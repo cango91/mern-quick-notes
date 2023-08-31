@@ -1,0 +1,10 @@
+a.disabled{
+    text-decoration: none;
+    color: var(--tan-3);
+    cursor: default;
+}
+
+a,
+a:visited{
+    color: var(--tan-3);
+}
