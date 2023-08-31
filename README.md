@@ -1,70 +1,15 @@
-# Getting Started with Create React App
+# QUICK NOTES
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+<blockquote>No longer will you forget that thing you wish you'd noted down</blockquote>
 
-## Available Scripts
+## MERN-Infrastructure
+Quick Notes lab builds on top of MERN-Infrastructure in the following manner:
++ Adds a new simple **Note model**. Notes are stored encrypted (TODO: refactor to use pre/post save hooks) and allow user-centric full-CRUD.
++ **Adds refresh tokens**: JWT are short-lived, refresh tokens are longer lived (in this case 7 days) and are rotated on each JWT refresh. This prevents frequent log-in while adding a layer of security. Also the refresh token is stored client-side in strict-same-site HTTP-only (and in production HTTPS-only) cookie, which implicitly adds some degree of CSRF and XSS protection. 
 
-In the project directory, you can run:
+    While an unexpired refresh token exists, JWT renewal happens seamlessly between client and server via the `bearer` middleware - a variation on the token middleware implemented in class - and `New-Access-Token` response header, without interrupting current request.
 
-### `npm start`
+    Refresh tokens also enable server-side logout, which is a nice to have in case a JWT becomes compromised (current refresh token used by the cliet is deleted on logout. Reason not to have one-to-one mapping between user and refresh token is to allow multiple device sessions/logins)
++ **Ditches `atob()`** in favor of custom function (not mine): `atob` uses `base64` whereas JWT uses `base64url`, which means any unicode character in the token will break the client side if atob is used. Instead, a custom prseJwt function does the parsing, factoring in the correct encoding.
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
-
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
-
-### `npm test`
-
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
-
-### `npm run build`
-
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
-
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
-
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
-
-### `npm run eject`
-
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
-
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
-
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
-
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
-
-## Learn More
-
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
-
-To learn React, check out the [React documentation](https://reactjs.org/).
-
-### Code Splitting
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
-
-### Analyzing the Bundle Size
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
-
-### Making a Progressive Web App
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
-
-### Advanced Configuration
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
-
-### Deployment
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
-
-### `npm run build` fails to minify
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+  See this question and top answer on [Stack Overflow](https://stackoverflow.com/questions/38552003/how-to-decode-jwt-token-in-javascript-without-using-a-library) for more details and the function.
