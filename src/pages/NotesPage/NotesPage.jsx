@@ -4,29 +4,27 @@ import NoteComponent from "../../components/NoteComponent/NoteComponent";
 import NewNote from "../../components/NewNote/NewNote";
 import './NotesPage.css';
 
+const initSort = 1;
 
 export default function NotesPage() {
     const [notes, setNotes] = useState([]);
     const [error, setError] = useState('');
-    const [sort,setSort] = useState(1);
+    const [sort,setSort] = useState(initSort);
     useEffect(() => {
         async function getNotes() {
             try {
                 const response = await getAllNotes();
                 if (response) {
-                    setNotes(response.sort((a,b) => sort>0 ? new Date(b.createdAt) - new Date(a.createdAt) :new Date(a.createdAt) - new Date(b.createdAt)));
-                    setNotes(response);
+                    setNotes(response.sort((a,b) => initSort > 0 ? new Date(b.createdAt) - new Date(a.createdAt) :new Date(a.createdAt) - new Date(b.createdAt)));
                 }
             } catch (error) {
                 setError("Couldn't get your notes.");
             }
         }
-        getNotes();
-        
+        getNotes();      
     }, []);
     useEffect(()=>{
-        const newState = [...notes];
-        setNotes(newState.sort((a,b) => sort>0 ? new Date(b.createdAt) - new Date(a.createdAt) :new Date(a.createdAt) - new Date(b.createdAt)));
+        setNotes(oldNotes => [...oldNotes].sort((a,b) => sort>0 ? new Date(b.createdAt) - new Date(a.createdAt) :new Date(a.createdAt) - new Date(b.createdAt)));
     },[sort]);
     function addNewNote(note) {
         if (notes) {
