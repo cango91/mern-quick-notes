@@ -14,7 +14,7 @@ export default function LoginForm({ setUser }) {
                     setError('Session expired, please login again');
             }
         }
-    },[error]);
+    },[]);
 
     function handleChange(e) {
         setFormData({ ...formData, [e.target.name]: e.target.value });
